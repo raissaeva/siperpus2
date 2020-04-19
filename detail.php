@@ -1,67 +1,79 @@
 <?php
-include '../koneksi.php';
 include '../aset/header.php';
+include '../koneksi.php';
+include 'fungsi-transaksi.php';
+$id_pinjam = $_GET['id_pinjam'];
 
-$id = $_GET['id'];
-
-$result = mysqli_query($koneksi, "SELECT * FROM buku INNER JOIN kategori USING(id_kategori) WHERE buku.id_buku = $id");
-$buku = mysqli_fetch_assoc($result);
-
+$sql = "SELECT * FROM peminjaman p INNER JOIN detail_pinjam dp ON p.id_pinjam=dp.id_pinjam INNER JOIN buku b ON b.id_buku=dp.id_buku where p.id_pinjam='$id_pinjam'";
+$res = mysqli_query($koneksi, $sql);
+$detail = mysqli_fetch_assoc($res);
+$tgl_kembali = $detail["tgl_kembali"];
+if ($tgl_kembali == null) {
+	$tgl_kembali = date("Y-m-d");
+	$denda = hitungDenda($koneksi, $id_pinjam, $tgl_kembali);
+} else {
+	$denda = hitungDenda($koneksi, $id_pinjam, $tgl_kembali);
+}
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<div class="container">
+	<div class="row mt-4">
+		<div class="col-md-7">
+			<h2>Detail Peminjaman</h2>
+			<hr class="bg-ligth">
+			<table class="table table-bordered">
+				<tr>
+					<td><strong>Judul</strong></td>
+					<td><?= $detail['judul'] ?></td>
+				</tr>
+				<tr>
+					<td><strong>Tanggal Pinjam</strong></td>
+					<td><?= date('d F Y', strtotime($detail['tgl_pinjam'])) ?></td>
+				</tr>
+				<tr>
+					<td><strong>Tanggal Jatuh Tempo</strong></td>
+					<td><?= date('d F Y', strtotime($detail['tgl_jatuh_tempo'])) ?></td>
+				</tr>
+				<tr>
+					<td><strong>Tanggal Kembali</strong></td>
+					<td>
+						<?php
+						if ($detail['tgl_kembali'] == NULL) {
+							echo '-';
+						} else {
+							echo date('d F Y', strtotime($detail['tgl_kembali']));
+						}
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td><strong>Status</strong></td>
+					<td><?= $detail['status'] ?></td>
+				</tr>
+				<?php
+				if ($denda > 0) {
+				?>
+					<tr>
+						<td class="table-danger" colspan="2">
+							<strong>Denda yang Harus Dibayar;</strong>Rp<?= $denda ?>
+						</td>
+					</tr>
+				<?php
+				}
+				?>
+				<tr>
+					<td class="text-rigth" colspan="2">
+						<a href="index.php" class="btn btn-success"><i class="fas fa-angle-double-left"></i>Kembali</a>
+						<a class="btn btn-primary<?php if ($detail['tgl_kembali'] != NULL) {
+														echo "disabled";
+													} ?>" href="form-kembali.php?id_pinjam=<?= $detail['id_pinjam'] ?>&id_buku=<?= $detail['id_buku'] ?>" role="button">Form Pengembalian</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
 
-<head>
-    <style></style>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-
-<body>
-    <a href="index.php"><button type="button" class="btn btn-primary ml-3 mt-3" style="width: 150px"><i class="fas fa-angle-double-left"></i> Back</button></a>
-    <div class="mx-auto shadow-lg p-3 mb-5 bg-white rounded" style="margin-top: 30px; width: 1000px; border-bottom: 3px solid grey">
-        <table class="table table-striped">
-            <tr>
-                <td rowspan="7" style="width: 350px"><img src="img/<?= $buku['cover']; ?>" alt="" width="300px"></td>
-                <td>ID BUKU</td>
-                <td>:</td>
-                <td><?= $buku['id_buku']; ?></td>
-            </tr>
-            <tr>
-                <td>JUDUL</td>
-                <td>:</td>
-                <td><?= $buku['judul']; ?></td>
-            </tr>
-            <tr>
-                <td>PENERBIT</td>
-                <td>:</td>
-                <td><?= $buku['penerbit']; ?></td>
-            </tr>
-            <tr>
-                <td>PENGARANG</td>
-                <td>:</td>
-                <td><?= $buku['pengarang']; ?></td>
-            </tr>
-            <tr>
-                <td>STOK</td>
-                <td>:</td>
-                <td><?= $buku['stok']; ?></td>
-            </tr>
-            <tr>
-                <td>KATEGORI</td>
-                <td>:</td>
-                <td><?= $buku['kategori']; ?></td>
-            </tr>
-            <tr>
-                <td>RINGKASAN</td>
-                <td>:</td>
-                <td><textarea readonly name="" id="" cols="30" rows="3"><?= $buku['ringkasan']; ?></textarea></td>
-            </tr>
-        </table>
-    </div>
-</body>
-
-</html>
-<?php include '../aset/footer.php'; ?>
+<?php
+include '../aset/footer.php';
+?>

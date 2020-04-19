@@ -1,22 +1,12 @@
 <?php
 include '../koneksi.php';
-
-$id = $_GET['id'];
-
-
-
-$result = mysqli_query($koneksi, "DELETE FROM buku WHERE id_buku = $id") or die(mysqli_error($koneksi));
-
-
-
-if ($result) {
-    echo "<script>
-    alert('BUKU BERHASIL DIHAPUS');
-    document.location.href = 'index.php';
-    </script>";
+$id = $_GET["id_pinjam"];
+$query = mysqli_query($koneksi, "DELETE FROM detail_pinjam where id_pinjam='$id'");
+$query_ = mysqli_query($koneksi, "DELETE FROM peminjaman where id_pinjam='$id'");
+if ($query && $query_) {
+    header("Location : index.php");
+    exit;
 } else {
-    echo "<script>
-    alert('BUKU GAGAL DIHAPUS');
-    document.location.href = 'index.php';
-    </script>";
+    header("Location : index.php");
+    exit;
 }
