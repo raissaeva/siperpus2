@@ -1,55 +1,58 @@
 <?php
-include 'koneksi.php';
-include 'aset/header.php';
+include '../koneksi.php';
+
+$sql = "SELECT * FROM anggota ORDER BY nama";
+
+$res = mysqli_query($koneksi, $sql);
+
+$pinjam = array();
 
 
-$buku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT SUM(stok) AS jb FROM buku"));
-$jumlah_buku = $buku["jb"];
+while ($data = mysqli_fetch_assoc($res)) {
+    $pinjam[] = $data;
+}
 
-
-$anggota = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) AS ja FROM anggota"));
-$jumlah_anggota = $anggota["ja"];
-
-
+include '../aset/header.php';
 ?>
-<div class="container">
-    <div class="row mt-4">
-        <div class="col-md" bg-warning>
-            <h2><i class="fas fa-chart-line mr-2"></i>Dashboard</h2>
-            <hr class="bg-light">
+<center>
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title"><i class="fas fa-edit"></i>Data anggoata</h2>
+        </div>
+        <a href="tambah.php"><button type="button" class="btn btn-info mt-3">TAMBAH DATA ANGGOATA</button></a>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Kelas</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $no = 1;
+                    foreach ($pinjam as $p) { ?>
+                        <tr>
+                            <th scope="row"><?= $no ?></td>
+                            <td><?= $p['nama'] ?></th>
+                            <td><?= $p['kelas'] ?></td>
+                            <td>
+                                <a href="detail.php?id=<?= $p["id_anggota"]; ?>" class="badge badge-success">Detail</a>
+                                <a href="edit.php?id=<?= $p["id_anggota"]; ?>" class="badge badge-warning">Edit</a>
+                                <a href="hapus.php?id=<?= $p["id_anggota"]; ?>" class="badge badge-danger">Hapus</a>
+                            </td>
+                        </tr>
+                    <?php
+                        $no++;
+                    }
+                    ?>
+                </tbody>
+            </table>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card bg-danger" style="width: 18rem;">
-                <div class="card-body text-white">
-                    <h5 class="card-title">Jumlah Buku</h5>
-                    <p class="card-text" style="font-size:60px"><?= $jumlah_buku; ?></p>
-                    <a href="http://localhost/siperpus/buku/index.php" class="text-white">Lebih detail <i class="fas fa-angle-double-right"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-warning" style="width: 18rem;">
-                <div class="card-body text-white">
-                    <h5 class="card-title">Jumlah Anggota</h5>
-                    <p class="card-text" style="font-size:60px"><?= $jumlah_anggota; ?></p>
-                    <a href="http://localhost/siperpus/anggota/index.php" class="text-white">Lebih detail <i class="fas fa-angle-double-right"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-primary" style="width: 18rem;">
-                <div class="card-body text-white">
-                    <h5 class="card-title">Jumlah Transaksi</h5>
-                    <p class="card-text" style="font-size:60px">279</p>
-                    <a href="http://localhost/siperpus/transaksi/index.php" class="text-white">Lebih detail <i class="fas fa-angle-double-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
+</center>
 <?php
-include 'aset/footer.php';
+include '../aset/footer.php';
 ?>
