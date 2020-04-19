@@ -2,10 +2,10 @@
 include '../koneksi.php';
 include '../aset/header.php';
 
-$id = $_GET['id_anggota'];
+$id = $_GET['id'];
 
-$result = mysqli_query($koneksi, "SELECT * FROM anggota INNER JOIN level USING(id_level)  WHERE id_anggota = $id");
-$anggota = mysqli_fetch_assoc($result);
+$result = mysqli_query($koneksi, "SELECT * FROM buku INNER JOIN kategori USING(id_kategori) WHERE buku.id_buku = $id");
+$buku = mysqli_fetch_assoc($result);
 
 ?>
 
@@ -24,40 +24,40 @@ $anggota = mysqli_fetch_assoc($result);
     <div class="mx-auto shadow-lg p-3 mb-5 bg-white rounded" style="margin-top: 30px; width: 1000px; border-bottom: 3px solid grey">
         <table class="table table-striped">
             <tr>
-                <td rowspan="7" style="width: 350px"><img src="IMG_20190707_064020_579.jpg" alt="" width="300px"></td>
-                <td>ID anggota</td>
+                <td rowspan="7" style="width: 350px"><img src="img/<?= $buku['cover']; ?>" alt="" width="300px"></td>
+                <td>ID BUKU</td>
                 <td>:</td>
-                <td><?= $anggota['id_anggota']; ?></td>
+                <td><?= $buku['id_buku']; ?></td>
             </tr>
             <tr>
-                <td>Nama</td>
+                <td>JUDUL</td>
                 <td>:</td>
-                <td><?= $anggota['nama']; ?></td>
+                <td><?= $buku['judul']; ?></td>
             </tr>
             <tr>
-                <td>Kelas</td>
+                <td>PENERBIT</td>
                 <td>:</td>
-                <td><?= $anggota['kelas']; ?></td>
+                <td><?= $buku['penerbit']; ?></td>
             </tr>
             <tr>
-                <td>NO. Telp</td>
+                <td>PENGARANG</td>
                 <td>:</td>
-                <td><?= $anggota['telp']; ?></td>
+                <td><?= $buku['pengarang']; ?></td>
             </tr>
             <tr>
-                <td>Username</td>
+                <td>STOK</td>
                 <td>:</td>
-                <td><?= $anggota['username']; ?></td>
+                <td><?= $buku['stok']; ?></td>
             </tr>
             <tr>
-                <td>Password</td>
+                <td>KATEGORI</td>
                 <td>:</td>
-                <td><?= $anggota['password']; ?></td>
+                <td><?= $buku['kategori']; ?></td>
             </tr>
             <tr>
-                <td>Level</td>
+                <td>RINGKASAN</td>
                 <td>:</td>
-                <td><?= $anggota['level']; ?></td>
+                <td><textarea readonly name="" id="" cols="30" rows="3"><?= $buku['ringkasan']; ?></textarea></td>
             </tr>
         </table>
     </div>

@@ -1,9 +1,13 @@
 <?php
 include '../koneksi.php';
 
-$id = $_GET["id"];
+$id = $_GET['id'];
 
-$result = mysqli_query($koneksi, "DELETE FROM anggota WHERE id_anggota = $id");
+
+
+$result = mysqli_query($koneksi, "DELETE FROM buku WHERE id_buku = $id") or die(mysqli_error($koneksi));
+
+
 
 if ($result) {
     echo "<script>

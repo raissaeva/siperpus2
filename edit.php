@@ -1,39 +1,42 @@
 <?php
 include '../koneksi.php';
-include '../aset/header.php';
-
 if (isset($_POST['simpan'])) {
     $id = $_POST['id'];
-    $nama = $_POST['nama'];
-    $kelas = $_POST['kelas'];
-    $telp = $_POST['telp'];
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $judul = $_POST['judul'];
+    $penerbit = $_POST['penerbit'];
+    $pengarang = $_POST['pengarang'];
+    $ringkasan = $_POST['ringkasan'];
+    $cover = $_POST['cover'];
+    $stok = $_POST['stok'];
+    $id_kategori = $_POST['kategori'];
 
-    $update = mysqli_query($koneksi, "UPDATE anggota SET
-    nama = '$nama',
-    kelas = '$kelas',
-    telp = '$telp',
-    username = '$username',
-    password = '$password'
-    WHERE id_anggota = $id") or die(mysqli_error($koneksi));
-
-    if ($update) {
+    $result = mysqli_query($koneksi, "UPDATE buku SET 
+    judul = '$judul',
+    penerbit = '$penerbit',
+    Pengarang = '$pengarang',
+    ringkasan = '$ringkasan',
+    cover = '$cover',
+    stok = '$stok',
+    id_kategori = '$id_kategori'
+    WHERE id_buku = $id");
+    if ($result) {
         echo "<script>
-    alert('ANGGOTA BERHASIL DI EDIT');
-    document.location.href = 'index.php';
-    </script>";
+        alert('BUKU BERHASIL DI EDIT');
+        document.location.href = 'index.php';
+        </script>";
     } else {
         echo "<script>
-    alert('ANGGOTA GAGAL DI EDIT');
-    document.location.href = 'index.php';
-    </script>";
+        alert('BUKU GAGAL DI EDIT');
+        document.location.href = 'index.php';
+        </script>";
     }
 }
+include '../aset/header.php';
+
 $id = $_GET['id'];
 
-$result = mysqli_query($koneksi, "SELECT * FROM anggota INNER JOIN level USING(id_level)  WHERE id_anggota = $id");
-$anggota = mysqli_fetch_assoc($result);
+$kategori = mysqli_query($koneksi, "SELECT * FROM kategori");
+$buku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM buku INNER JOIN kategori USING(id_kategori) WHERE buku.id_buku = '$id' "));
 
 ?>
 <div class="container">
@@ -41,33 +44,53 @@ $anggota = mysqli_fetch_assoc($result);
         <div class="col-md-9">
             <div class="card">
                 <div class="card-header">
-                    <h2>Edit Data Anggota</h2>
+                    <h2>Edit Data Buku</h2>
                 </div>
                 <div class="card-body">
                     <form method="post" action="">
                         <input type="hidden" value="<?= $id; ?>" name="id">
                         <div class="form-group">
-                            <label for="anggota">Nama Lengkap</label>
-                            <input type="text" class="form-control" name="nama" id="anggota" placeholder="Masukkan nama lengkap" value="<?= $anggota['nama']; ?>">
-                            <small class="form-text text-muted">Contoh: Raihan Firmansyah</small>
+                            <label for="judul">Judul Buku</label>
+                            <input type="text" class="form-control" name="judul" id="judul" placeholder="Masukkan judul buku" value="<?= $buku['judul']; ?>">
+                            <small class="form-text text-muted">Contoh: Tere Liye</small>
                         </div>
                         <div class="form-group">
-                            <label for="kelas">Kelas</label>
-                            <input type="text" class="form-control" name="kelas" id="kelas" placeholder="Masukkan kelas" value="<?= $anggota['kelas']; ?>">
-                            <small class="form-text text-muted">Contoh: XRPL7</small>
+                            <label for="penerbit">Penerbit</label>
+                            <input type="text" class="form-control" name="penerbit" id="penerbit" placeholder="Masukkan penerbit" value="<?= $buku['penerbit']; ?>">
+                            <small class="form-text text-muted">Contoh: Gramedia</small>
                         </div>
                         <div class="form-group">
-                            <label for="telp">Nomor Telepon</label>
-                            <input type="text" class="form-control" name="telp" id="telp" placeholder="Masukkan nomor telepon" value="<?= $anggota['telp']; ?>">
-                            <small class="form-text text-muted">Contoh: 111-222-3333</small>
+                            <label for="pengarang">Pengarang</label>
+                            <input type="text" class="form-control" name="pengarang" id="pengarang" placeholder="Masukkan nama pengarang" value="<?= $buku['pengarang']; ?>">
+                            <small class="form-text text-muted">Contoh: Raissa</small>
                         </div>
                         <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control" name="username" id="username" placeholder="Masukkan username" value="<?= $anggota['username']; ?>">
+                            <label for="ringkasan">Ringkasan</label>
+                            <textarea name="ringkasan" id="ringkasan" cols="30" rows="5" placeholder="masukkan ringkasan buku" class="form-control" value="<?= $buku['ringkasan']; ?>"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Masukkan password" value="<?= $anggota['password']; ?>">
+                            <label for="cover">cover</label>
+                            <input type="text" class="form-control" name="cover" id="cover" placeholder="Masukkan cover buku" value="<?= $buku['cover']; ?>">
+                            <small class="form-text text-muted">NOTE: tidak harus diisi</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="stok">Stok</label>
+                            <input type="number" class="form-control" name="stok" id="stok" placeholder="Masukkan stok buku" value="<?= $buku['stok']; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="kategori">ID Kategori</label>
+                            <select name="kategori" id="kategori" style="width: 100%" required>
+                                <option value="<?= $buku['id_kategori']; ?>"><?= $buku['kategori']; ?></option>
+                                <option value="">-- PILIH KATEGORI BUKU --</option>
+                                <?php while ($k = mysqli_fetch_assoc($kategori)) :
+                                    if ($k['kategori'] != $buku['kategori']) :
+                                ?>
+                                        <option value="<?= $k["id_kategori"]; ?>"><?= $k["kategori"]; ?></option>
+                                <?php
+                                    endif;
+                                endwhile;
+                                ?>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary" name="simpan">Simpan</button>
                     </form>

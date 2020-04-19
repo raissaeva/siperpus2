@@ -1,37 +1,54 @@
 <?php
+include '../koneksi.php';
 include '../aset/header.php';
+
+$kategori = mysqli_query($koneksi, "SELECT * FROM kategori");
+
 ?>
 <div class="container">
     <div class="row mt-4">
         <div class="col-md-9">
             <div class="card">
                 <div class="card-header">
-                    <h2>Tambah Data Anggota</h2>
+                    <h2>Tambah Data Buku</h2>
                 </div>
                 <div class="card-body">
                     <form method="post" action="proses-tambah.php">
                         <div class="form-group">
-                            <label for="anggota">Nama Lengkap</label>
-                            <input type="text" class="form-control" name="nama" id="anggota" placeholder="Masukkan nama lengkap">
+                            <label for="judul">Judul Buku</label>
+                            <input type="text" class="form-control" name="judul" id="judul" placeholder="Masukkan judul buku">
+                            <small class="form-text text-muted">Contoh: Tere Liye</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="penerbit">Penerbit</label>
+                            <input type="text" class="form-control" name="penerbit" id="penerbit" placeholder="Masukkan penerbit">
+                            <small class="form-text text-muted">Contoh: Gramedia</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="pengarang">Pengarang</label>
+                            <input type="text" class="form-control" name="pengarang" id="pengarang" placeholder="Masukkan nama pengarang">
                             <small class="form-text text-muted">Contoh: Raissa</small>
                         </div>
                         <div class="form-group">
-                            <label for="kelas">Kelas</label>
-                            <input type="text" class="form-control" name="kelas" id="kelas" placeholder="Masukkan kelas">
-                            <small class="form-text text-muted">Contoh: XRPL7</small>
+                            <label for="ringkasan">Ringkasan</label>
+                            <textarea name="ringkasan" id="ringkasan" cols="30" rows="5" placeholder="masukkan ringkasan buku" class="form-control"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="telp">Nomor Telepon</label>
-                            <input type="text" class="form-control" name="telp" id="telp" placeholder="Masukkan nomor telepon">
-                            <small class="form-text text-muted">Contoh: 111-222-3333</small>
+                            <label for="cover">cover</label>
+                            <input type="file" class="form-control" name="cover" id="cover" placeholder="Masukkan cover buku">
                         </div>
                         <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control" name="username" id="username" placeholder="Masukkan username">
+                            <label for="stok">Stok</label>
+                            <input type="number" class="form-control" name="stok" id="stok" placeholder="Masukkan stok buku">
                         </div>
                         <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Masukkan password">
+                            <label for="kategori">ID Kategori</label>
+                            <select name="kategori" id="kategori" style="width: 100%" required>
+                                <option value="">-- PILIH KATEGORI BUKU --</option>
+                                <?php while ($k = mysqli_fetch_assoc($kategori)) : ?>
+                                    <option value="<?= $k["id_kategori"]; ?>"><?= $k["kategori"]; ?></option>
+                                <?php endwhile; ?>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary" name="simpan">Simpan</button>
                     </form>
